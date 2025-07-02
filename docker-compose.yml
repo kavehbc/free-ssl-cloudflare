@@ -1,0 +1,17 @@
+services:
+  wildcard-ssl:
+    image: kavehbc/free-ssl-cloudflare
+    container_name: wildcard-ssl
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - CRON_INTERVAL=${CRON_INTERVAL:-* 2 * * *} # e.g., default everyday at 2 AM
+      - DOMAIN=${DOMAIN}
+      - CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN}
+      - CLOUDFLARE_API_KEY=${CLOUDFLARE_API_KEY:-} # Optional, Cloudflare API key
+      - CLOUDFLARE_EMAIL=${CLOUDFLARE_EMAIL:-} # Optional, Cloudflare email
+      - SSL_EMAIL=${SSL_EMAIL}
+    volumes:
+      - ./letsencrypt:/etc/letsencrypt
+    restart: unless-stopped

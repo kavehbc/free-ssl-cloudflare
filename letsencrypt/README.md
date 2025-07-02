@@ -1,0 +1,1 @@
+This folder will be mounted to the folder where all the certificates will be stored in the container
