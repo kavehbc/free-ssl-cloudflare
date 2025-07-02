@@ -48,10 +48,12 @@ This project provides an automated solution to obtain and renew free Let's Encry
 
 3. **Run with Docker:**
    ```sh
-   docker run -d --name wildcard-ssl -e CRON_INTERVAL="* 2 * * *" \
+   docker run -d --name wildcard-ssl \
+      --env CRON_INTERVAL="* 2 * * *" \
       --env DOMAIN=example.com \
       --env CLOUDFLARE_API_TOKEN=your_cloudflare_api_token \
       --env SSL_EMAIL=your@email.com \
+      -v ./letsencrypt:/etc/letsencrypt \
       kavehbc/free-ssl-cloudflare
    ```
 
