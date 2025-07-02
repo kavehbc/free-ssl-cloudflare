@@ -44,10 +44,7 @@ This project provides an automated solution to obtain and renew free Let's Encry
    ```
 
 2. **Configure environment variables:**
-   Create a `.env` file or set the following variables:
-   - `CF_API_TOKEN`: Your Cloudflare API token
-   - `DOMAINS`: Comma-separated list of domains (e.g., `example.com,*.example.com`)
-   - `EMAIL`: Email address for Let's Encrypt registration
+   Create a `.env` file or set the docker variables
 
 3. **Run with Docker:**
    ```sh
