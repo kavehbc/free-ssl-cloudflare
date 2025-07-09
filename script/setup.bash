@@ -81,9 +81,12 @@ certbot certonly --non-interactive --agree-tos --email "$SSL_EMAIL" \
 if [ $? -ne 0 ]; then
   echo "Failed to issue SSL certificate for $DOMAIN"
   exit 1
-fi  
+else
+  echo "SSL certificate issued successfully for $DOMAIN"
+fi
 
 # Create the cron job
+echo "Creating cron job for SSL renewal"
 echo "$CRON_INTERVAL root /app/script/ssl-renew.bash" > /etc/cron.d/ssl-renew
 
 # Give execution rights on the cron job file
@@ -93,3 +96,4 @@ chmod 0644 /etc/cron.d/ssl-renew
 crontab /etc/cron.d/ssl-renew
 
 cron -f
+echo "Cron service started"
