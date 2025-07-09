@@ -73,16 +73,21 @@ fi
 chmod 0600 /etc/letsencrypt/cloudflare.ini
 
 # Issuing the certificate
-echo "Issuing SSL certificate for $DOMAIN"
-certbot certonly --non-interactive --agree-tos --email "$SSL_EMAIL" \
-  --dns-cloudflare --dns-cloudflare-credentials /etc/letsencrypt/cloudflare.ini \
-  -d "$DOMAIN" -d "*.$DOMAIN" --quiet
-
-if [ $? -ne 0 ]; then
-  echo "Failed to issue SSL certificate for $DOMAIN"
-  exit 1
+echo "Checking if SSL certificate for $DOMAIN already exists"
+if [ -d "/etc/letsencrypt/live/$DOMAIN" ]; then
+  echo "Certificate for $DOMAIN already exists. Skipping issuance."
 else
-  echo "SSL certificate issued successfully for $DOMAIN"
+  echo "Issuing SSL certificate for $DOMAIN"
+  certbot certonly --non-interactive --agree-tos --email "$SSL_EMAIL" \
+    --dns-cloudflare --dns-cloudflare-credentials /etc/letsencrypt/cloudflare.ini \
+    -d "$DOMAIN" -d "*.$DOMAIN" --quiet
+
+  if [ $? -ne 0 ]; then
+    echo "Failed to issue SSL certificate for $DOMAIN"
+    exit 1
+  else
+    echo "SSL certificate issued successfully for $DOMAIN"
+  fi
 fi
 
 # Create the cron job
