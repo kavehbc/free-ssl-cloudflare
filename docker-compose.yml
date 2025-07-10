@@ -12,7 +12,7 @@ services:
       - CLOUDFLARE_API_KEY=${CLOUDFLARE_API_KEY:-} # Optional, Cloudflare API key
       - CLOUDFLARE_EMAIL=${CLOUDFLARE_EMAIL:-} # Optional, Cloudflare email
       - SSL_EMAIL=${SSL_EMAIL:-} # Required, email for SSL certificate
-      - AUTO_RENEWAL=${AUTO_RENEWAL:-true} # Enable auto-renewal
+      - AUTO_RENEW=${AUTO_RENEW:-true} # Enable auto-renewal
     volumes:
       - ./letsencrypt:/etc/letsencrypt
     restart: unless-stopped

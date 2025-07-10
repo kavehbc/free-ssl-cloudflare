@@ -22,7 +22,7 @@ This project provides an automated solution to obtain and renew free Let's Encry
 | `DOMAIN`                | Yes      | The domain or comma-separated domains to issue certificates for              |
 | `SSL_EMAIL`             | Yes      | Email address for Let's Encrypt registration and renewal notifications       |
 | `CRON_INTERVAL`         | No       | Cron expression for renewal schedule (default: `* 2 * * *` Every day at 2 AM)|
-| `AUTO_RENEWAL`          | No       | Enable automatic renewal via cron (`true` to enable, `false` to disable, default: `true`) |
+| `AUTO_RENEW`          | No       | Enable automatic renewal via cron (`true` to enable, `false` to disable, default: `true`) |
 
 **Notes:**
 - `CLOUDFLARE_API_TOKEN` must have permissions to manage DNS records for the specified domain(s).
@@ -54,7 +54,7 @@ This project provides an automated solution to obtain and renew free Let's Encry
       --env DOMAIN=example.com \
       --env CLOUDFLARE_API_TOKEN=your_cloudflare_api_token \
       --env SSL_EMAIL=your@email.com \
-      --env AUTO_RENEWAL=true \
+      --env AUTO_RENEW=true \
       -v ./letsencrypt:/etc/letsencrypt \
       kavehbc/free-ssl-cloudflare
    ```
