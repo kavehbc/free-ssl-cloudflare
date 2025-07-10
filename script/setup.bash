@@ -7,6 +7,7 @@ CLOUDFLARE_API_KEY="${CLOUDFLARE_API_KEY:-}"
 CLOUDFLARE_EMAIL="${CLOUDFLARE_EMAIL:-}"
 DOMAIN="${DOMAIN:-}"
 SSL_EMAIL="${SSL_EMAIL:-}"
+AUTO_RENEWAL="${AUTO_RENEWAL:-true}" # Default to true for auto-renewal
 
 # Prompt for CRON_INTERVAL if not set
 if [[ -z "$CRON_INTERVAL" ]]; then
@@ -90,15 +91,20 @@ else
   fi
 fi
 
-# Create the cron job
-echo "Creating cron job for SSL renewal"
-echo "$CRON_INTERVAL root /app/script/ssl-renew.bash" > /etc/cron.d/ssl-renew
 
-# Give execution rights on the cron job file
-chmod 0644 /etc/cron.d/ssl-renew
+# Create the cron job only if AUTO_RENEWAL is true
+if [[ "$AUTO_RENEWAL" == "true" ]]; then
+  echo "Creating cron job for SSL renewal"
+  echo "$CRON_INTERVAL root /app/script/ssl-renew.bash" > /etc/cron.d/ssl-renew
 
-# Apply the cron job
-crontab /etc/cron.d/ssl-renew
+  # Give execution rights on the cron job file
+  chmod 0644 /etc/cron.d/ssl-renew
 
-cron -f
-echo "Cron service started"
+  # Apply the cron job
+  crontab /etc/cron.d/ssl-renew
+
+  cron -f
+  echo "Cron service started"
+else
+  echo "AUTO_RENEWAL is not enabled. Skipping cron job setup."
+fi

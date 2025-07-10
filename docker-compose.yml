@@ -7,11 +7,12 @@ services:
       dockerfile: Dockerfile
     environment:
       - CRON_INTERVAL=${CRON_INTERVAL:-* 2 * * *} # e.g., default everyday at 2 AM
-      - DOMAIN=${DOMAIN}
+      - DOMAIN=${DOMAIN:-} # Required, domain or comma-separated domains
       - CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN:-} # Optional, Cloudflare API token
       - CLOUDFLARE_API_KEY=${CLOUDFLARE_API_KEY:-} # Optional, Cloudflare API key
       - CLOUDFLARE_EMAIL=${CLOUDFLARE_EMAIL:-} # Optional, Cloudflare email
-      - SSL_EMAIL=${SSL_EMAIL}
+      - SSL_EMAIL=${SSL_EMAIL:-} # Required, email for SSL certificate
+      - AUTO_RENEWAL=${AUTO_RENEWAL:-true} # Enable auto-renewal
     volumes:
       - ./letsencrypt:/etc/letsencrypt
     restart: unless-stopped

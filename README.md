@@ -14,14 +14,15 @@ This project provides an automated solution to obtain and renew free Let's Encry
 
 ### Docker Environment Variables
 
-| Variable | Required | Description |
-|-------|----------|-----|
-| `CLOUDFLARE_API_TOKEN` | No | Cloudflare API token with DNS edit permissions |
-| `CLOUDFLARE_API_KEY` | No | Cloudflare Global API (Optional) |
-| `CLOUDFLARE_EMAIL` | No | Cloudflare Email if Global API is used (Optional) |
-| `DOMAIN` | Yes | The domain or comma-separated domains to issue certificates for |
-| `SSL_EMAIL` | Yes | Email address for Let's Encrypt registration and renewal notifications |
-| `CRON_INTERVAL` | No | Cron expression for renewal schedule (default: `* 2 * * *` Every day at 2 AM) |
+| Variable                | Required | Description                                                                 |
+|-------------------------|----------|-----------------------------------------------------------------------------|
+| `CLOUDFLARE_API_TOKEN`  | No       | Cloudflare API token with DNS edit permissions                               |
+| `CLOUDFLARE_API_KEY`    | No       | Cloudflare Global API (Optional)                                            |
+| `CLOUDFLARE_EMAIL`      | No       | Cloudflare Email if Global API is used (Optional)                           |
+| `DOMAIN`                | Yes      | The domain or comma-separated domains to issue certificates for              |
+| `SSL_EMAIL`             | Yes      | Email address for Let's Encrypt registration and renewal notifications       |
+| `CRON_INTERVAL`         | No       | Cron expression for renewal schedule (default: `* 2 * * *` Every day at 2 AM)|
+| `AUTO_RENEWAL`          | No       | Enable automatic renewal via cron (`true` to enable, `false` to disable, default: `true`) |
 
 **Notes:**
 - `CLOUDFLARE_API_TOKEN` must have permissions to manage DNS records for the specified domain(s).
@@ -53,12 +54,13 @@ This project provides an automated solution to obtain and renew free Let's Encry
       --env DOMAIN=example.com \
       --env CLOUDFLARE_API_TOKEN=your_cloudflare_api_token \
       --env SSL_EMAIL=your@email.com \
+      --env AUTO_RENEWAL=true \
       -v ./letsencrypt:/etc/letsencrypt \
       kavehbc/free-ssl-cloudflare
    ```
 
 4. **Access your certificates:**
-   Certificates will be available in the `letsencrypt` directory.
+   Certificates will be available in the `letsencrypt/live/<domain>` directory.
 
 ## References
 - [Docker Hub](https://hub.docker.com/repository/docker/kavehbc/free-ssl-cloudflare)
