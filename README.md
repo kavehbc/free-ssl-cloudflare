@@ -39,7 +39,7 @@ This project provides an automated solution to obtain and renew free Let's Encry
 ### Quick Start
 
 1. **Clone the repository:**
-   ```sh
+   ```bash
    git clone https://github.com/kavehbc/free-ssl-cloudflare
    cd free-ssl-cloudflare
    ```
@@ -48,7 +48,7 @@ This project provides an automated solution to obtain and renew free Let's Encry
    Create a `.env` file or set the docker variables
 
 3. **Run with Docker:**
-   ```sh
+   ```bash
    docker run -d --name wildcard-ssl \
       --env CRON_INTERVAL="* 2 * * *" \
       --env DOMAIN=example.com \
@@ -57,6 +57,12 @@ This project provides an automated solution to obtain and renew free Let's Encry
       --env AUTO_RENEW=true \
       -v ./letsencrypt:/etc/letsencrypt \
       kavehbc/free-ssl-cloudflare
+   ```
+
+or
+
+   ```bash
+   docker compose --env-file ./docker.env up
    ```
 
 4. **Access your certificates:**
