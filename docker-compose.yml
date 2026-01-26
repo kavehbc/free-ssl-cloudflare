@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      - CRON_INTERVAL=${CRON_INTERVAL:-* 2 * * *} # e.g., default everyday at 2 AM
+      - CRON_INTERVAL=${CRON_INTERVAL:-0 2 * * *} # e.g., default everyday at 2 AM
       - DOMAIN=${DOMAIN:-} # Required, domain or comma-separated domains
       - CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN:-} # Optional, Cloudflare API token
       - CLOUDFLARE_API_KEY=${CLOUDFLARE_API_KEY:-} # Optional, Cloudflare API key

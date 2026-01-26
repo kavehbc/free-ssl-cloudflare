@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Default values for variables from environment
-CRON_INTERVAL="${CRON_INTERVAL:-* 2 * * *}" # Default to everyday at 2 AM
+CRON_INTERVAL="${CRON_INTERVAL:-0 2 * * *}" # Default to everyday at 2 AM
 CLOUDFLARE_API_TOKEN="${CLOUDFLARE_API_TOKEN:-}"
 CLOUDFLARE_API_KEY="${CLOUDFLARE_API_KEY:-}"
 CLOUDFLARE_EMAIL="${CLOUDFLARE_EMAIL:-}"
@@ -11,8 +11,8 @@ AUTO_RENEW="${AUTO_RENEW:-true}" # Default to true for auto-renewal
 
 # Prompt for CRON_INTERVAL if not set
 if [[ -z "$CRON_INTERVAL" ]]; then
-  read -p "Enter CRON_INTERVAL (default '* 2 * * *'): " CRON_INTERVAL
-  CRON_INTERVAL="${CRON_INTERVAL:-* 2 * * *}"
+  read -p "Enter CRON_INTERVAL (default '0 2 * * *'): " CRON_INTERVAL
+  CRON_INTERVAL="${CRON_INTERVAL:-0 2 * * *}"
 fi
 
 # Check if all required variables are set
@@ -56,7 +56,7 @@ if [[ -z "$SSL_EMAIL" ]]; then
 fi
 
 # Create the Cloudflare credentials file
-echo "Creating Cloudflare credentials file"
+echo "Creating Cloudflare credentials file..."
 
 # if api key and email are provided, use them
 if [[ -n "$CLOUDFLARE_API_KEY" && -n "$CLOUDFLARE_EMAIL" ]]; then
@@ -105,8 +105,9 @@ if [[ "$AUTO_RENEW" == "true" ]]; then
   # Apply the cron job
   crontab /etc/cron.d/ssl-renew
 
+  echo "Cron service created with interval: $CRON_INTERVAL"
+  echo "Starting cron service..."  
   cron -f
-  echo "Cron service started"
 else
   echo "AUTO_RENEW is not enabled. Skipping cron job setup."
 fi
