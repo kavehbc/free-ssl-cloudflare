@@ -21,6 +21,8 @@ if [[ -z "$CRON_INTERVAL" ]]; then
   exit 1
 fi
 
+echo "Using API TOKEN: $CLOUDFLARE_API_TOKEN"
+
 # Prompt for Cloudflare credentials if not set
 if [[ -z "$CLOUDFLARE_API_TOKEN" ]] && [[ -z "$CLOUDFLARE_API_KEY" || -z "$CLOUDFLARE_EMAIL" ]]; then
   echo "Cloudflare credentials not set."
