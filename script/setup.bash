@@ -22,7 +22,7 @@ if [[ -z "$CRON_INTERVAL" ]]; then
 fi
 
 # Prompt for Cloudflare credentials if not set
-if [[ -z "$CLOUDFLARE_API_TOKEN" && ( -z "$CLOUDFLARE_API_KEY" || -z "$CLOUDFLARE_EMAIL" ) ]]; then
+if [[ -z "$CLOUDFLARE_API_TOKEN" ]] && [[ -z "$CLOUDFLARE_API_KEY" || -z "$CLOUDFLARE_EMAIL" ]]; then
   echo "Cloudflare credentials not set."
   read -p "Enter CLOUDFLARE_API_TOKEN (leave empty if using API key): " CLOUDFLARE_API_TOKEN
   if [[ -z "$CLOUDFLARE_API_TOKEN" ]]; then
