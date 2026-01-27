@@ -23,6 +23,8 @@ This project provides an automated solution to obtain and renew free Let's Encry
 | `SSL_EMAIL`             | Yes      | Email address for Let's Encrypt registration and renewal notifications       |
 | `CRON_INTERVAL`         | No       | Cron expression for renewal schedule (default: `* 2 * * *` Every day at 2 AM)|
 | `AUTO_RENEW`          | No       | Enable automatic renewal via cron (`true` to enable, `false` to disable, default: `true`) |
+| `STAGING`               | No       | Set to `true` to use Let's Encrypt Staging environment (avoid rate limits during test) |
+| `PROPAGATION_SECONDS`   | No       | Time in seconds to wait for DNS propagation before validation (default: 30) |
 
 **Notes:**
 - `CLOUDFLARE_API_TOKEN` must have permissions to manage DNS records for the specified domain(s).

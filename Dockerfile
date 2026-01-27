@@ -28,6 +28,10 @@ COPY . .
 RUN chmod +x /app/script/ssl-renew.bash
 RUN chmod +x /app/script/setup.bash
 
+# Healthcheck
+HEALTHCHECK --interval=5m --timeout=3s \
+  CMD certbot certificates || exit 1
+
 # Start the cron service
 ENTRYPOINT [ "/app/script/setup.bash" ]
 

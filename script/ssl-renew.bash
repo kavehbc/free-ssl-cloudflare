@@ -2,7 +2,7 @@
 
 echo "Renewing certificates..."
 
-certbot renew --quiet
+certbot renew --non-interactive
 
 if [ $? -eq 0 ]; then
     echo "Certificates renewed successfully."

@@ -13,6 +13,8 @@ services:
       - CLOUDFLARE_EMAIL=${CLOUDFLARE_EMAIL:-} # Optional, Cloudflare email
       - SSL_EMAIL=${SSL_EMAIL:-} # Required, email for SSL certificate
       - AUTO_RENEW=${AUTO_RENEW:-true} # Enable auto-renewal
+      - STAGING=${STAGING:-false} # Set to true for Let's Encrypt Staging environment
+      - PROPAGATION_SECONDS=${PROPAGATION_SECONDS:-30} # Wait time for DNS propagation
     volumes:
       - ./letsencrypt:/etc/letsencrypt
     restart: unless-stopped

@@ -11,48 +11,28 @@ AUTO_RENEW="${AUTO_RENEW:-true}" # Default to true for auto-renewal
 
 # Prompt for CRON_INTERVAL if not set
 if [[ -z "$CRON_INTERVAL" ]]; then
-  read -p "Enter CRON_INTERVAL (default '0 2 * * *'): " CRON_INTERVAL
-  CRON_INTERVAL="${CRON_INTERVAL:-0 2 * * *}"
-fi
-
-# Check if all required variables are set
-if [[ -z "$CRON_INTERVAL" ]]; then
-  echo "Error: CRON_INTERVAL environment variable is not set."
-  exit 1
+  echo "Warning: CRON_INTERVAL not set, defaulting to '0 2 * * *'"
+  CRON_INTERVAL="0 2 * * *"
 fi
 
 echo "Domain: $DOMAIN"
 
-# Prompt for Cloudflare credentials if not set
+# Check Cloudflare credentials
 if [[ -z "$CLOUDFLARE_API_TOKEN" ]] && [[ -z "$CLOUDFLARE_API_KEY" || -z "$CLOUDFLARE_EMAIL" ]]; then
-  echo "Cloudflare credentials not set."
-  read -p "Enter CLOUDFLARE_API_TOKEN (leave empty if using API key): " CLOUDFLARE_API_TOKEN
-  if [[ -z "$CLOUDFLARE_API_TOKEN" ]]; then
-    read -p "Enter CLOUDFLARE_API_KEY: " CLOUDFLARE_API_KEY
-    read -p "Enter CLOUDFLARE_EMAIL: " CLOUDFLARE_EMAIL
-    if [[ -z "$CLOUDFLARE_API_KEY" || -z "$CLOUDFLARE_EMAIL" ]]; then
-      echo "Error: You must set either CLOUDFLARE_API_TOKEN or both CLOUDFLARE_API_KEY and CLOUDFLARE_EMAIL."
-      exit 1
-    fi
-  fi
+  echo "Error: You must set either CLOUDFLARE_API_TOKEN or both CLOUDFLARE_API_KEY and CLOUDFLARE_EMAIL."
+  exit 1
 fi
 
-# Prompt for DOMAIN if not set
+# Check DOMAIN
 if [[ -z "$DOMAIN" ]]; then
-  read -p "Enter DOMAIN: " DOMAIN
-  if [[ -z "$DOMAIN" ]]; then
-    echo "Error: DOMAIN environment variable is not set."
-    exit 1
-  fi
+  echo "Error: DOMAIN environment variable is not set."
+  exit 1
 fi
 
-# Prompt for SSL_EMAIL if not set
+# Check SSL_EMAIL
 if [[ -z "$SSL_EMAIL" ]]; then
-  read -p "Enter SSL_EMAIL: " SSL_EMAIL
-  if [[ -z "$SSL_EMAIL" ]]; then
-    echo "Error: SSL_EMAIL environment variable is not set."
-    exit 1
-  fi
+  echo "Error: SSL_EMAIL environment variable is not set."
+  exit 1
 fi
 
 # Create the Cloudflare credentials file
@@ -75,21 +55,45 @@ fi
 # Set permissions for the credentials file
 chmod 0600 /etc/letsencrypt/cloudflare.ini
 
+# Build domain arguments
+DOMAIN_ARGS=""
+IFS=',' read -ra DOMAINS <<< "$DOMAIN"
+for i in "${DOMAINS[@]}"; do
+  # Trim whitespace
+  d=$(echo "$i" | xargs)
+  DOMAIN_ARGS="$DOMAIN_ARGS -d $d -d *.$d"
+done
+
+# Prepare additional arguments
+ADDITIONAL_ARGS=""
+if [[ "$STAGING" == "true" ]]; then
+  echo "Enabling STAGING mode..."
+  ADDITIONAL_ARGS="$ADDITIONAL_ARGS --test-cert"
+fi
+
+PROPAGATION_SECONDS="${PROPAGATION_SECONDS:-30}"
+
 # Issuing the certificate
-echo "Checking if SSL certificate for $DOMAIN already exists"
-if [ -d "/etc/letsencrypt/live/$DOMAIN" ]; then
-  echo "Certificate for $DOMAIN already exists. Skipping issuance."
+# We check the first domain to see if we should skip, assuming all usually go together in this simple script
+FIRST_DOMAIN=$(echo "${DOMAINS[0]}" | xargs)
+
+echo "Checking if SSL certificate for $FIRST_DOMAIN and friends already exists"
+if [ -d "/etc/letsencrypt/live/$FIRST_DOMAIN" ]; then
+  echo "Certificate for $FIRST_DOMAIN already exists. Skipping issuance."
 else
-  echo "Issuing SSL certificate for $DOMAIN"
+  echo "Issuing SSL certificate for: $DOMAIN_ARGS"
   certbot certonly --non-interactive --agree-tos --email "$SSL_EMAIL" \
     --dns-cloudflare --dns-cloudflare-credentials /etc/letsencrypt/cloudflare.ini \
-    -d "$DOMAIN" -d "*.$DOMAIN" --quiet
+    --dns-cloudflare-propagation-seconds "$PROPAGATION_SECONDS" \
+    $ADDITIONAL_ARGS \
+    $DOMAIN_ARGS \
+    --quiet
 
   if [ $? -ne 0 ]; then
     echo "Failed to issue SSL certificate for $DOMAIN"
     exit 1
   else
-    echo "SSL certificate issued successfully for $DOMAIN"
+    echo "SSL certificate issued successfully"
   fi
 fi
 
@@ -107,7 +111,8 @@ if [[ "$AUTO_RENEW" == "true" ]]; then
 
   echo "Cron service created with interval: $CRON_INTERVAL"
   echo "Starting cron service..."  
-  cron -f
+  exec cron -f
 else
-  echo "AUTO_RENEW is not enabled. Skipping cron job setup."
+  echo "AUTO_RENEW is not enabled. Certificate issued. Container will sleep to keep alive."
+  exec sleep infinity
 fi
