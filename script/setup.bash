@@ -86,8 +86,8 @@ else
     --dns-cloudflare --dns-cloudflare-credentials /etc/letsencrypt/cloudflare.ini \
     --dns-cloudflare-propagation-seconds "$PROPAGATION_SECONDS" \
     $ADDITIONAL_ARGS \
-    $DOMAIN_ARGS \
-    --quiet
+    $DOMAIN_ARGS
+    # --quiet
 
   if [ $? -ne 0 ]; then
     echo "Failed to issue SSL certificate for $DOMAIN"

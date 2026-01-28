@@ -1,4 +1,5 @@
-FROM debian:stable-slim
+# FROM debian:stable-slim
+FROM python:3.13-slim
 
 # Set label metadata
 LABEL version="1.0"
@@ -13,10 +14,15 @@ RUN apt-get update && \
     ca-certificates \
     cron \
     openssl \
-    certbot \
-    python3-certbot-dns-cloudflare && \
+    certbot && \
+#    python3-certbot-dns-cloudflare && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
+
+# Upgrade pip and install specific version of cloudflare package
+RUN pip install --upgrade pip
+RUN pip install certbot-dns-cloudflare
+RUN pip install --upgrade cloudflare==2.19
 
 # Create necessary directories
 WORKDIR /app
