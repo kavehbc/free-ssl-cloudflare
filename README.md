@@ -89,7 +89,7 @@ docker run -d --name wildcard-ssl \
 
 ## Building the Image Manually (Multi-Platform)
 
-If you need to build the image locally for different architectures (e.g., AMD64, ARM64 for Apple Silicon, or ARMv7 for Raspberry Pi), you can use `docker buildx`.
+If you need to build the image locally for different architectures (e.g., AMD64, or ARM64 for Apple Silicon), you can use `docker buildx`.
 
 1.  **Enable Docker Buildx:**
     Ensure Docker Desktop or Docker Engine is installed and supports `buildx`.
@@ -97,7 +97,7 @@ If you need to build the image locally for different architectures (e.g., AMD64,
 2.  **Build and Push (Multi-arch):**
     To build for multiple platforms and push to a registry:
     ```bash
-    docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 -t youruser/free-ssl-cloudflare:latest --push .
+    docker buildx build --platform linux/amd64,linux/arm64 -t kavehbc/free-ssl-cloudflare:latest --push .
     ```
 
 3.  **Build Locally (Single-arch):**
@@ -115,7 +115,7 @@ If you need to build the image locally for different architectures (e.g., AMD64,
 
 ## License
 
-This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the Apache License 2.0.
 
 ## References
 - [Docker Hub](https://hub.docker.com/repository/docker/kavehbc/free-ssl-cloudflare)
